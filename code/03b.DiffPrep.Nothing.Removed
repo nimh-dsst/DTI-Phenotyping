@@ -1,0 +1,38 @@
+#!/bin/sh
+
+#Let the script know whether this is the first or second scan
+visit=1
+
+# Load AFNI and TORTOISE
+module load afni
+module load TORTOISE/3.2.0
+
+# Set up directories
+ROOTdir='/data'
+PROCdir=$ROOTdir/PROC
+CODEdir=$ROOTdir/code
+LISTdir=$ROOTdir/lists
+
+# Set up swarm file
+rm $ROOTdir/slurm/swarm_diffprepB.txt
+SWARMFILE=$ROOTdir/slurm/swarm_diffprepB.txt
+echo -n "" > ${SWARMFILE}
+
+# Unzip T2w NIFTI
+for s in $(cat ${LISTdir}/No.Bad.DWIs.txt); do
+
+	3dcopy ${PROCdir}/'sub-s'$s/'ses-'$visit/anat/'sub-s'$s'_ses-'$visit'_T2w.ss.Ax'.nii.gz ${PROCdir}/'sub-s'$s/'ses-'$visit/anat/'sub-s'$s'_ses-'$visit'_T2w.ss.Ax'.nii
+
+done
+
+# Loop through participants and add DIFFPREP to SWARMFILE
+for s in $(cat ${LISTdir}/No.Bad.DWIs.txt); do 
+
+	echo 	"DIFFPREP -i ${PROCdir}/'sub-s'$s/'ses-'$visit/dwi/AP.list --structural ${PROCdir}/'sub-s'$s/'ses-'$visit/anat/'sub-s'$s'_ses-'$visit'_T2w.ss.Ax'.nii --phase vertical --do_QC -e ANTSSyN -d for_final --res 1.8 1.8 1.8" >> ${SWARMFILE}
+
+done
+
+# Run swarm
+chmod 770 ${ROOTdir}/slurm/*
+swarm -t 64 -g 12 -f ${SWARMFILE} -p 1 --gres=lscratch:100 --time 24:00:00 --job-name diffprepB --module afni --module TORTOISE/3.2.0
+

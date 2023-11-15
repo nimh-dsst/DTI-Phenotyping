@@ -1,0 +1,26 @@
+#!/bin/sh
+
+#Let the script know whether this is the first or second scan
+visit=1
+
+# Load AFNI
+module load afni
+
+# Set up directories
+ROOTdir='/data'
+BIDSdir=$ROOTdir/BIDS
+PROCdir=$ROOTdir/PROC
+CODEdir=$ROOTdir/code
+LISTdir=$ROOTdir/lists
+
+# Loop through participants
+for s in $(cat $LISTdir/No.Bad.DWIs.txt); do
+
+	# Create dwi_sel_AP to list volumes to keep
+	fat_proc_select_vols -in_dwi $BIDSdir/'sub-s'$s/ses-${visit}/dwi/*AP.nii.gz -in_img $PROCdir/'sub-s'$s/ses-${visit}/dwi/QC/QC_qc_sepscl.sag.png -prefix $PROCdir/'sub-s'$s/ses-${visit}/dwi/dwi_sel_AP
+
+	# Change permissions
+	chmod 660 $PROCdir/'sub-s'$s/ses-${visit}/dwi/*
+	chmod 770 $PROCdir/'sub-s'$s/ses-${visit}/dwi/QC
+
+done

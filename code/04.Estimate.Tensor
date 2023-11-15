@@ -1,0 +1,45 @@
+#!/bin/sh
+
+#Let the script know whether this is the first or second scan
+visit=1
+
+# Load FSL, AFNI, and TORTOISE modules
+module load fsl
+module load afni
+module load TORTOISE
+
+# Set up directories
+ROOTdir='/data'
+PROCdir=$ROOTdir/PROC
+CODEdir=$ROOTdir/code
+LISTdir=$ROOTdir/lists
+
+# Set up swarm file
+rm $ROOTdir/slurm/swarm_TortoiseTensor.txt
+SWARMFILE=$ROOTdir/slurm/swarm_TortoiseTensor.txt
+echo -n "" > ${SWARMFILE}
+
+
+for s in $(cat $LISTdir/CompleteSample.txt); do
+
+	# Extract a single volume out of a 4D DWI image based on desired bvalue
+	ExtractBValVolume -i $PROCdir/'sub-s'$s/ses-${visit}/dwi/AP_DMC.list -b 0;
+
+	# Perform skull stripping then unzip
+	bet $PROCdir/'sub-s'$s/ses-${visit}/dwi/AP_DMC_bval_0_1.nii $PROCdir/'sub-s'$s/ses-${visit}/dwi/b0_brain.nii -m -f 0.2;
+	3dcopy $PROCdir/'sub-s'$s/ses-${visit}/dwi/b0_brain_mask.nii.gz $PROCdir/'sub-s'$s/ses-${visit}/dwi/b0_brain_mask.nii;
+
+	chmod 770 $PROCdir/'sub-s'$s/ses-${visit}/dwi/b0*
+	chmod 770 $PROCdir/'sub-s'$s/ses-${visit}/dwi/AP_DMC*
+
+	# Add to swarm
+	echo 	"EstimateTensorNLLSRESTORE -i ${PROCdir}/sub-s${s}/ses-${visit}/dwi/AP_DMC.list -m ${PROCdir}/sub-s${s}/ses-${visit}/dwi/b0_brain_mask.nii ;\
+	ComputeAllTensorMaps.bash ${PROCdir}/sub-s$s/ses-${visit}/dwi/AP_DMC_R1_DT.nii " >> ${SWARMFILE}
+
+done
+
+# Run swarm
+chmod 770 ${ROOTdir}/slurm/*
+swarm -t 64 -g 12 -b 16 -f ${SWARMFILE} -p 1 --gres=lscratch:100 --time 2:00:00 --job-name TortoiseTensor --module TORTOISE 
+
+

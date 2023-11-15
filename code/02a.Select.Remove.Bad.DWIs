@@ -1,0 +1,51 @@
+#!/bin/sh
+
+# Let the script know whether this is the first or second scan
+visit=1
+
+# Load AFNI and TORTOISE
+module load afni
+module load TORTOISE/3.2.0
+
+# Set up directories
+ROOTdir='/data'
+BIDSdir=$ROOTdir/BIDS
+PROCdir=$ROOTdir/PROC
+CODEdir=$ROOTdir/code
+LISTdir=$ROOTdir/lists
+
+# Loop through participants
+for s in $(cat $LISTdir/Bad.DWIs.txt); do
+
+	# Create dwi_sel_AP to list volumes to keep
+	fat_proc_select_vols -in_dwi $BIDSdir/'sub-s'$s/ses-${visit}/dwi/*AP.nii.gz -in_img $PROCdir/'sub-s'$s/ses-${visit}/dwi/QC/QC_qc_sepscl.sag.png -prefix $PROCdir/'sub-s'$s/ses-${visit}/dwi/dwi_sel_AP
+
+	# Change permissions
+	chmod 660 $PROCdir/'sub-s'$s/ses-${visit}/dwi/*
+	chmod 770 $PROCdir/'sub-s'$s/ses-${visit}/dwi/QC
+
+done
+
+
+# Loop through participants again
+for s in $(cat $LISTdir/Bad.DWIs.txt); do
+
+	# Convert DWIs to create new matrices including bvals and bvecs
+	fat_proc_convert_dcm_dwis -innii $BIDSdir/'sub-s'$s/ses-${visit}/dwi/'sub-s'$s'_ses-1_dti_AP'.nii.gz -inbvec $BIDSdir/'sub-s'$s/ses-${visit}/dwi/'sub-s'$s'_ses-1_dti_AP'.bvec -inbval $BIDSdir/'sub-s'$s/ses-${visit}/dwi/'sub-s'$s'_ses-1_dti_AP'.bval -prefix $PROCdir/'sub-s'$s/ses-${visit}/dwi/AP
+
+	# Filter out bad volumes from vols and b-matrices
+	selstr=`cat $PROCdir/sub-s$s/ses-${visit}/dwi/dwi_sel_AP_goods.txt`
+	fat_proc_filter_dwis -in_dwi $PROCdir/'sub-s'$s/ses-${visit}/dwi/*.nii.gz -in_col_matT $PROCdir/'sub-s'$s/ses-${visit}/dwi/AP_matT.dat -select "$selstr" -prefix $PROCdir/'sub-s'$s/ses-${visit}/dwi/AP;
+
+	# Take in TORTOISE matrix. Output gradients and bvalues as row matrixes
+	1dDW_Grad_o_Mat++ -in_col_matT $PROCdir/'sub-s'$s/ses-${visit}/dwi/AP_matT.dat -unit_mag_out -out_row_vec $PROCdir/'sub-s'$s/ses-${visit}/dwi/AP_rvec.dat -out_row_bval_sep $PROCdir/'sub-s'$s/ses-${visit}/dwi/AP_bval.dat;
+
+	# Unzip and delete AP.nii.gz
+	3dcopy $PROCdir/'sub-s'$s/ses-${visit}/dwi/AP.nii.gz $PROCdir/'sub-s'$s/ses-${visit}/dwi/AP.nii;
+	rm $PROCdir/'sub-s'$s/ses-${visit}/dwi/AP.nii.gz
+
+	# Change permissions
+	chmod 660 $PROCdir/'sub-s'$s/ses-${visit}/dwi/*
+	chmod 777 $PROCdir/'sub-s'$s/ses-${visit}/dwi/QC
+
+done

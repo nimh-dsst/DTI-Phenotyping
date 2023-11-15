@@ -1,0 +1,70 @@
+#!/bin/sh
+
+# Load FSL and AFNI modules
+module load fsl
+module load afni
+
+# Set up directories
+ROOTdir='/data'
+BIDSdir=$ROOTdir/BIDS
+PROCdir=$ROOTdir/PROC
+CODEdir=$ROOTdir/code
+LISTdir=$ROOTdir/lists
+TBSSdir=$ROOTdir/TBSS_Tortoise
+PALMdir=$TBSSdir/PALM
+
+
+# Add TBSS scripts to path for tbss_1_preproc_NA
+export PATH="/data/code:$PATH"
+
+# cd into TBSS directory	
+cd $TBSSdir
+
+# Create directories to copy AD and RD images of every participant
+#DTI_meas =( AD RD )
+if [ ! -d "$TBSSdir/AD" ]; then
+	echo "## Creating AD dir"
+	mkdir AD
+	chmod -R 770 $TBSSdir/AD
+fi
+
+if [ ! -d "$TBSSdir/RD" ]; then
+	echo "## Creating RD dir"
+	mkdir RD
+	chmod -R 770 $TBSSdir/RD
+fi
+
+for s in $(cat $LISTdir/CompleteSample.txt); do
+
+	cd $PROCdir/'sub-s'$s/ses-1/dwi/
+	echo "## Split eigenvalues (EV) to get RD for: $s"
+	fslsplit $PROCdir/'sub-s'$s/ses-1/dwi/AP_DMC_R1_DT_EV.nii AP_DMC_R1_DT_EV -t
+
+	echo "## Create RD (average EV0001 & EV0002: $s"
+	fslmaths $PROCdir/'sub-s'$s/ses-1/dwi/AP_DMC_R1_DT_EV0001.nii.gz -add $PROCdir/'sub-s'$s/ses-1/dtwi/AP_DMC_R1_DT_EV0002.nii.gz $PROCdir/'sub-s'$s/ses-1/dwi/AP_DMC_R1_DT_EV_sum
+	fslmaths $PROCdir/'sub-s'$s/ses-1/dwi/AP_DMC_R1_DT_EV_sum.nii.gz -div 2 $PROCdir/'sub-s'$s/ses-1/dwi/AP_DMC_R1_DT_RadialDiffusivity
+
+	echo "## Copying and organizing RD for: $s"
+	cp $PROCdir/'sub-s'$s/ses-1/dwi/AP_DMC_R1_DT_RadialDiffusivity.nii.gz $TBSSdir/RD/'sub-s'$s'_FA.nii.gz'
+
+
+	echo "## Copying and organizing AD for: $s"
+	cp $PROCdir/'sub-s'$s/ses-1/dwi/AP_DMC_R1_DT_AD.nii $TBSSdir/AD/'sub-s'$s'_FA.nii.gz'
+
+	echo "## Convert all tensor images to 770"
+	chmod 770 $PROCdir/'sub-s'$s/ses-1/dwi/AP_DMC*
+
+done
+
+chmod -R 770 $TBSSdir/RD/*
+chmod -R 770 $TBSSdir/RD/*
+chmod -R 770 $TBSSdir/FA/*
+chmod -R 770 $TBSSdir/stats/*
+
+# Run tbss_non_FA
+echo "## Run preprocessing (non-linear registration, merge into 4D file, project to skeleton) for : AD"
+tbss_non_FA AD
+
+echo "## Run preprocessing (non-linear registration, merge into 4D file, project to skeleton) for : RD"
+tbss_non_FA RD
+

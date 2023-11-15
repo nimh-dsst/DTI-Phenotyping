@@ -1,0 +1,54 @@
+#!/bin/sh
+# The bval and bvec files as outputted from the GE-Scanner are wrong, and must not be used!
+# The bval was manually created based on our knowledge of the sequence and visual inspection of the raw data
+
+visit=1
+
+# Load FSL and AFNI modules
+module load fsl
+module load afni
+
+# Set up directories
+ROOTdir='/data'
+BIDSdir=$ROOTdir/BIDS
+PROCdir=$ROOTdir/PROC
+CODEdir=$ROOTdir/code
+LISTdir=$ROOTdir/lists
+
+# Loop through all participants
+for s in $(cat $LISTdir/CompleteSample.txt); do
+
+	mkdir $PROCdir/$s
+	mkdir $PROCdir/$s/'ses-'$visit
+	mkdir $PROCdir/$s/'ses-'$visit/dwi/
+	mkdir $PROCdir/$s/'ses-'$visit/dwi/QC
+
+	# Perform T2 skull stripping; fsl-bet works best for our data, titrate the -f values individually for each participant
+	bet $BIDSdir/'sub-s'$s/'ses-'$visit/anat/'sub-s'$s'_ses-'$visit'_T2w'.nii.gz $PROCdir/'sub-s'$s/'ses-'$visit/anat/'sub-s'$s'_ses-'$visit'_T2w.ss'.nii.gz -R 
+
+	rm -rf $PROCdir/'sub-s'$s/'ses-'$visit/anat/QC
+	rm $PROCdir/'sub-s'$s/'ses-'$visit/anat/*.1D
+	rm $PROCdir/'sub-s'$s/'ses-'$visit/anat/*.txt
+	rm $PROCdir/'sub-s'$s/'ses-'$visit/anat/*.nii 
+	rm $PROCdir/'sub-s'$s/'ses-'$visit/anat/*Ax.nii.gz 
+
+	# Axialize T2_icbm152_t2_relx_tal_nlin_sym_09a_ACPCE.nii.gz
+	ref_t2w=$CODEdir/fatcat_proc_mni_ref/mni_icbm152_t2_relx_tal_nlin_sym_09a_ACPCE.nii.gz
+	ref_t2w_wt=$CODEdir/fatcat_proc_mni_ref/mni_icbm152_t2_relx_tal_nlin_sym_09a_ACPCE_wtell.nii.gz
+
+	fat_proc_axialize_anat -inset $PROCdir/'sub-s'$s/'ses-'$visit/anat/'sub-s'$s'_ses-'$visit'_T2w.ss'.nii.gz -prefix $PROCdir/'sub-s'$s/'ses-'$visit/anat/'sub-s'$s'_ses-'$visit'_T2w.ss.Ax' -mode_t2w -refset $ref_t2w -extra_al_wtmask $ref_t2w_wt -extra_al_opts "-newgrid 1.0" -out_match_ref
+
+	# Change origin & create QC for DWI 
+	echo "++ Applying origin 0 0 0 for $s"
+	3drefit -xorigin_raw 0 -yorigin_raw 0 -zorigin_raw 0 $BIDSdir/'sub-s'$s/'ses-'$visit/dwi/*AP.nii.gz;
+	echo "++ Set center of brain to center of mass for $s";
+	3dCM -set 0 0 0 $BIDSdir/'sub-s'$s/'ses-'$visit/dwi/*AP.nii.gz;
+	@djunct_4d_imager -inset $BIDSdir/'sub-s'$s/'ses-'$visit/dti/*AP.nii.gz -prefix $PROCdir/'sub-s'$s/ses-${visit}/dwi/QC/QC;
+
+	# Change permissions of new folders
+	chmod 660 $PROCdir/'sub-s'$s/ses-${visit}/dwi/QC/*
+	chmod 660 $PROCdir/'sub-s'$s/ses-${visit}/anat/QC/*
+	chmod 660 $PROCdir/'sub-s'$s/ses-${visit}/anat/*
+	chmod 770 $PROCdir/'sub-s'$s/ses-${visit}/anat/QC
+
+done
