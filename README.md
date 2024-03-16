@@ -1,6 +1,6 @@
 # Emotion and Development Branch Phenotyping and DTI (2012-2017)
 
-Analysis files and meta-data to accompany the manuscript "Modeling shared and specific variances of irritability, inattention, and hyperactivity yields novel insights into white matter perturbations."
+Analysis files and meta-data to accompany the manuscript "[Modeling shared and specific variances of irritability, inattention, and hyperactivity yields novel insights into white matter perturbations](https://doi.org/10.1016/j.jaac.2024.02.010)" published in the *Journal of the American Academy of Child and Adolescent Psychiatry*[^1].
 
 This repository contains analysis scripts (MPlus, bash, Matlab, R) used for preprocessing and analysis of the data found in our [OpenNeuro dataset](https://openneuro.org/datasets/ds004605). Although the code used to deface the anatomical scans (T1, T2) is not included in this repository, we de-identified these images using using v1.0.0 of the [DSST Defacing Pipeline](https://github.com/nih-fmrif/dsst-defacing-pipeline/).
 
@@ -12,7 +12,7 @@ Note: These MPlus input files assume that missing data are coded as `999`, but t
 
 #### Script1_EFA.MPlus.Pheno.inp
 
-Performs EFA using items from the Conners (3rd edition) Comprehensive Behavioral Rating Scale (CBRS) for parents[^1].
+Performs EFA using items from the Conners (3rd edition) Comprehensive Behavioral Rating Scale (CBRS) for parents[^2].
 
 #### Script2_CFA.MPlus.Pheno.inp & Script2_CFA.MPlus.DTI.inp
 
@@ -58,7 +58,7 @@ data
 
 ### Preprocessing Scripts
 
-Bash scripts that perform basic DTI preprocessing using common neuroimaging tools: [Analysis of Functional NeuroImages (AFNI)](https://afni.nimh.nih.gov)[^2], [Tolerably Obsessive registration and Tensor Optimization Indolent Software Ensemble (TORTOISE)](https://tortoise.nibib.nih.gov)[^3] [^4], and [Tract-Based Spatial Statistics (TBSS) in FSL](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/TBSS)[^5]. Scripts should be run in order from 01.Preproc to 06.TBSS.Proc.nonFA.
+Bash scripts that perform basic DTI preprocessing using common neuroimaging tools: [Analysis of Functional NeuroImages (AFNI)](https://afni.nimh.nih.gov)[^3], [Tolerably Obsessive registration and Tensor Optimization Indolent Software Ensemble (TORTOISE)](https://tortoise.nibib.nih.gov)[^4] [^5], and [Tract-Based Spatial Statistics (TBSS) in FSL](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/TBSS)[^6]. Scripts should be run in order from 01.Preproc to 06.TBSS.Proc.nonFA.
 
 #### 01.Preproc
 Create directories in the PROC directory where all outputs will be saved. Perform T2 skull stripping (using FSL's `bet` function). Axialize T2 images (using AFNI's `fat_proc_axialize_anat`). Set origin for DWI images to 0,0,0.
@@ -107,7 +107,7 @@ The file `DTI_Directions.xlsx` contains information about the directions removed
 
 ### Analyses in PALM
 
-Analyses of the DTI data were conducted with [Permutation Analysis of Linear Models (PALM)](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/PALM)[^6], using preprocessed TBSS data as inputs. Prior to running these analyses, the mask of the FA skeleton (`mean_FA_skeleton_mask.nii`) must be visually inspected and modified, if neccessary, to remove any voxels containing skull/dura, gray matter, etc.
+Analyses of the DTI data were conducted with [Permutation Analysis of Linear Models (PALM)](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/PALM)[^7], using preprocessed TBSS data as inputs. Prior to running these analyses, the mask of the FA skeleton (`mean_FA_skeleton_mask.nii`) must be visually inspected and modified, if neccessary, to remove any voxels containing skull/dura, gray matter, etc.
 
 #### PALM commands
 
@@ -118,12 +118,12 @@ Analyses of the DTI data were conducted with [Permutation Analysis of Linear Mod
 * Shared factor clusters as masks with AD
 * Shared factor clusters as masks with RD
 * Latent factors from CFA with FA
-* Questionnaire scores (Affective Reactivity Index (ARI)[^7], CBRS) with FA
+* Questionnaire scores (Affective Reactivity Index (ARI)[^8], CBRS) with FA
 * Diagnostic group differences in FA
 
 #### Exchangeability Blocks (EB)
 
-The file `EB.csv` contains the [exchangability blocks](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/PALM/ExchangeabilityBlocks) for PALM[^8], which were used in the analysis for diagnostic group differences in FA, although the column headers must be removed before using with PALM. The columns in this spreadsheet are as follows:
+The file `EB.csv` contains the [exchangability blocks](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/PALM/ExchangeabilityBlocks) for PALM[^9], which were used in the analysis for diagnostic group differences in FA, although the column headers must be removed before using with PALM. The columns in this spreadsheet are as follows:
 
 * `participant_id`: participant identifier, which must be removed before running analyses in PALM
 * `constant`: column containing -1 for all participants
@@ -152,18 +152,20 @@ There are 11 pairs of related participants:
 
 ## References
 
-[^1]: Conners, C. K., Pitkanen, J., & Rzepa, S. R. (2011). Conners 3rd Edition (Conners 3; Conners 2008). In J. S. Kreutzer, J. DeLuca, & B. Caplan (Eds.), Encyclopedia of Clinical Neuropsychology (pp. 675–678). Springer New York.
+[^1]: McKay, C.C., Scheinberg, B., Xu, E.P., Kircanski, K., Pine, D.S., Brotman, M.A., Leibenluft, E., & Linke, J.O. (2024). Modeling shared and specific variances of irritability, inattention, and hyperactivity yields novel insights into white matter perturbations. Journal of the American Academy of Child and Adolescent Psychiatry. doi: [10.1016/j.jaac.2024.02.010](https://doi.org/10.1016/j.jaac.2024.02.010)
 
-[^2]: Taylor, P. A., & Saad, Z. S. (2013). FATCAT: (an efficient) Functional and Tractographic Connectivity Analysis Toolbox. Brain connectivity, 3(5), 523–535. https://doi.org/10.1089/brain.2013.0154
+[^2]: Conners, C. K., Pitkanen, J., & Rzepa, S. R. (2011). Conners 3rd Edition (Conners 3; Conners 2008). In J. S. Kreutzer, J. DeLuca, & B. Caplan (Eds.), Encyclopedia of Clinical Neuropsychology (pp. 675–678). Springer New York.
 
-[^3]: Pierpaoli, C., Walker, L., Irfanoglu, M. O., Barnett, A., Basser, P., Chang, L-C., Koay, C., Pajevic, S., Rohde, G., Sarlls, J., Wu, M. (2010). TORTOISE: an integrated software package for processing of diffusion MRI data. ISMRM 18th annual meeting, Stockholm, Sweden, abstract #1597
+[^3]: Taylor, P. A., & Saad, Z. S. (2013). FATCAT: (an efficient) Functional and Tractographic Connectivity Analysis Toolbox. Brain connectivity, 3(5), 523–535. doi: [10.1089/brain.2013.0154](https://doi.org/10.1089/brain.2013.0154)
 
-[^4]: Irfanoglu, M. O., Nayak, A., Jenkins, J., Pierpaoli, C. TORTOISEv3:Improvements and New Features of the NIH Diffusion MRI Processing Pipeline. ISMRM 25th annual meeting, Honolulu, HI, abstract #3540
+[^4]: Pierpaoli, C., Walker, L., Irfanoglu, M. O., Barnett, A., Basser, P., Chang, L-C., Koay, C., Pajevic, S., Rohde, G., Sarlls, J., Wu, M. (2010). TORTOISE: an integrated software package for processing of diffusion MRI data. ISMRM 18th annual meeting, Stockholm, Sweden, abstract #1597
 
-[^5]: Smith, S. M., Jenkinson, M., Johansen-Berg, H., Rueckert, D., Nichols, T. E., Mackay, C. E., Watkins, K. E., Ciccarelli, O., Cader, M. Z., Matthews, P. M., & Behrens, T. E. (2006). Tract-based spatial statistics: voxelwise analysis of multi-subject diffusion data. NeuroImage, 31(4), 1487–1505. https://doi.org/10.1016/j.neuroimage.2006.02.024
+[^5]: Irfanoglu, M. O., Nayak, A., Jenkins, J., Pierpaoli, C. TORTOISEv3:Improvements and New Features of the NIH Diffusion MRI Processing Pipeline. ISMRM 25th annual meeting, Honolulu, HI, abstract #3540
 
-[^6]: Winkler, A. M., Ridgway, G. R., Webster, M. A., Smith, S. M., & Nichols, T. E. (2014). Permutation inference for the general linear model. NeuroImage, 92(100), 381–397. https://doi.org/10.1016/j.neuroimage.2014.01.060
+[^6]: Smith, S. M., Jenkinson, M., Johansen-Berg, H., Rueckert, D., Nichols, T. E., Mackay, C. E., Watkins, K. E., Ciccarelli, O., Cader, M. Z., Matthews, P. M., & Behrens, T. E. (2006). Tract-based spatial statistics: voxelwise analysis of multi-subject diffusion data. NeuroImage, 31(4), 1487–1505. doi: [10.1016/j.neuroimage.2006.02.024](https://doi.org/10.1016/j.neuroimage.2006.02.024)
 
-[^7]: Stringaris, A., Goodman, R., Ferdinando, S., Razdan, V., Muhrer, E., Leibenluft, E., & Brotman, M. A. (2012). The Affective Reactivity Index: a concise irritability scale for clinical and research settings. Journal of child psychology and psychiatry, and allied disciplines, 53(11), 1109–1117. https://doi.org/10.1111/j.1469-7610.2012.02561.x
+[^7]: Winkler, A. M., Ridgway, G. R., Webster, M. A., Smith, S. M., & Nichols, T. E. (2014). Permutation inference for the general linear model. NeuroImage, 92(100), 381–397. doi: [10.1016/j.neuroimage.2014.01.060](https://doi.org/10.1016/j.neuroimage.2014.01.060)
 
-[^8]: Winkler, A. M., Webster, M. A., Vidaurre, D., Nichols, T. E., & Smith, S. M. (2015). Multi-level block permutation. NeuroImage, 123, 253–268. https://doi.org/10.1016/j.neuroimage.2015.05.092
+[^8]: Stringaris, A., Goodman, R., Ferdinando, S., Razdan, V., Muhrer, E., Leibenluft, E., & Brotman, M. A. (2012). The Affective Reactivity Index: a concise irritability scale for clinical and research settings. Journal of child psychology and psychiatry, and allied disciplines, 53(11), 1109–1117. doi: [10.1111/j.1469-7610.2012.02561.x](https://doi.org/10.1111/j.1469-7610.2012.02561.x)
+
+[^9]: Winkler, A. M., Webster, M. A., Vidaurre, D., Nichols, T. E., & Smith, S. M. (2015). Multi-level block permutation. NeuroImage, 123, 253–268. doi: [10.1016/j.neuroimage.2015.05.092](https://doi.org/10.1016/j.neuroimage.2015.05.092)
