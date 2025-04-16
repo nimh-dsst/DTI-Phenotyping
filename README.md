@@ -152,20 +152,20 @@ There are 11 pairs of related participants:
 
 ## References
 
-[^1]: McKay, C.C., Scheinberg, B., Xu, E.P., Kircanski, K., Pine, D.S., Brotman, M.A., Leibenluft, E., & Linke, J.O. (2024). Modeling shared and specific variances of irritability, inattention, and hyperactivity yields novel insights into white matter perturbations. Journal of the American Academy of Child and Adolescent Psychiatry. doi: [10.1016/j.jaac.2024.02.010](https://doi.org/10.1016/j.jaac.2024.02.010)
+[^1]: McKay, C.C., Scheinberg, B., Xu, E.P., Kircanski, K., Pine, D.S., Brotman, M.A., Leibenluft, E., & Linke, J.O. (2024). Modeling shared and specific variances of irritability, inattention, and hyperactivity yields novel insights into white matter perturbations. *Journal of the American Academy of Child and Adolescent Psychiatry*, *63*(12), 1239-1250. doi: [10.1016/j.jaac.2024.02.010](https://doi.org/10.1016/j.jaac.2024.02.010)
 
 [^2]: Conners, C. K., Pitkanen, J., & Rzepa, S. R. (2011). Conners 3rd Edition (Conners 3; Conners 2008). In J. S. Kreutzer, J. DeLuca, & B. Caplan (Eds.), Encyclopedia of Clinical Neuropsychology (pp. 675–678). Springer New York.
 
-[^3]: Taylor, P. A., & Saad, Z. S. (2013). FATCAT: (an efficient) Functional and Tractographic Connectivity Analysis Toolbox. Brain connectivity, 3(5), 523–535. doi: [10.1089/brain.2013.0154](https://doi.org/10.1089/brain.2013.0154)
+[^3]: Taylor, P. A., & Saad, Z. S. (2013). FATCAT: (an efficient) Functional and Tractographic Connectivity Analysis Toolbox. *Brain Connectivity*, *3*(5), 523–535. doi: [10.1089/brain.2013.0154](https://doi.org/10.1089/brain.2013.0154)
 
 [^4]: Pierpaoli, C., Walker, L., Irfanoglu, M. O., Barnett, A., Basser, P., Chang, L-C., Koay, C., Pajevic, S., Rohde, G., Sarlls, J., Wu, M. (2010). TORTOISE: an integrated software package for processing of diffusion MRI data. ISMRM 18th annual meeting, Stockholm, Sweden, abstract #1597
 
 [^5]: Irfanoglu, M. O., Nayak, A., Jenkins, J., Pierpaoli, C. TORTOISEv3:Improvements and New Features of the NIH Diffusion MRI Processing Pipeline. ISMRM 25th annual meeting, Honolulu, HI, abstract #3540
 
-[^6]: Smith, S. M., Jenkinson, M., Johansen-Berg, H., Rueckert, D., Nichols, T. E., Mackay, C. E., Watkins, K. E., Ciccarelli, O., Cader, M. Z., Matthews, P. M., & Behrens, T. E. (2006). Tract-based spatial statistics: voxelwise analysis of multi-subject diffusion data. NeuroImage, 31(4), 1487–1505. doi: [10.1016/j.neuroimage.2006.02.024](https://doi.org/10.1016/j.neuroimage.2006.02.024)
+[^6]: Smith, S. M., Jenkinson, M., Johansen-Berg, H., Rueckert, D., Nichols, T. E., Mackay, C. E., Watkins, K. E., Ciccarelli, O., Cader, M. Z., Matthews, P. M., & Behrens, T. E. (2006). Tract-based spatial statistics: voxelwise analysis of multi-subject diffusion data. *NeuroImage*, *31*(4), 1487–1505. doi: [10.1016/j.neuroimage.2006.02.024](https://doi.org/10.1016/j.neuroimage.2006.02.024)
 
-[^7]: Winkler, A. M., Ridgway, G. R., Webster, M. A., Smith, S. M., & Nichols, T. E. (2014). Permutation inference for the general linear model. NeuroImage, 92(100), 381–397. doi: [10.1016/j.neuroimage.2014.01.060](https://doi.org/10.1016/j.neuroimage.2014.01.060)
+[^7]: Winkler, A. M., Ridgway, G. R., Webster, M. A., Smith, S. M., & Nichols, T. E. (2014). Permutation inference for the general linear model. *NeuroImage*, *92*(100), 381–397. doi: [10.1016/j.neuroimage.2014.01.060](https://doi.org/10.1016/j.neuroimage.2014.01.060)
 
-[^8]: Stringaris, A., Goodman, R., Ferdinando, S., Razdan, V., Muhrer, E., Leibenluft, E., & Brotman, M. A. (2012). The Affective Reactivity Index: a concise irritability scale for clinical and research settings. Journal of child psychology and psychiatry, and allied disciplines, 53(11), 1109–1117. doi: [10.1111/j.1469-7610.2012.02561.x](https://doi.org/10.1111/j.1469-7610.2012.02561.x)
+[^8]: Stringaris, A., Goodman, R., Ferdinando, S., Razdan, V., Muhrer, E., Leibenluft, E., & Brotman, M. A. (2012). The Affective Reactivity Index: a concise irritability scale for clinical and research settings. *Journal of Child Psychology and Psychiatry*, *53*(11), 1109–1117. doi: [10.1111/j.1469-7610.2012.02561.x](https://doi.org/10.1111/j.1469-7610.2012.02561.x)
 
-[^9]: Winkler, A. M., Webster, M. A., Vidaurre, D., Nichols, T. E., & Smith, S. M. (2015). Multi-level block permutation. NeuroImage, 123, 253–268. doi: [10.1016/j.neuroimage.2015.05.092](https://doi.org/10.1016/j.neuroimage.2015.05.092)
+[^9]: Winkler, A. M., Webster, M. A., Vidaurre, D., Nichols, T. E., & Smith, S. M. (2015). Multi-level block permutation. *NeuroImage*, *123*, 253–268. doi: [10.1016/j.neuroimage.2015.05.092](https://doi.org/10.1016/j.neuroimage.2015.05.092)
